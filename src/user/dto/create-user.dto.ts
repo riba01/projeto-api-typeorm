@@ -1,4 +1,11 @@
-import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDate,
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsStrongPassword,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -16,4 +23,9 @@ export class CreateUserDto {
     minSymbols: 1,
   })
   password: string;
+
+  @IsOptional()
+  @Type(() => Date) // 👈 Faz a conversão de string -> Date
+  @IsDate()
+  birthAt?: Date | null;
 }
