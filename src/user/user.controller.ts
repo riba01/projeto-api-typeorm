@@ -9,6 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ParamId } from '../decorator/param-id.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -31,7 +32,8 @@ export class UserController {
   }
 
   @Get(':id')
-  async readOneUser(@Param('id', ParseIntPipe) id: number) {
+  async readOneUser(@ParamId() id: number) {
+    console.log({ id });
     return this.userService.readOne(id);
   }
 
