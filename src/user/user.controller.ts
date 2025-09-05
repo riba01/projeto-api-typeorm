@@ -14,10 +14,12 @@ import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
+//@UseInterceptors(LogInterceptor) //assim intercepta todo o controler
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  //@UseInterceptors(LogInterceptor) // assim apenas essa rota
   @Post()
   async createUser(@Body() data: CreateUserDto) {
     return this.userService.create(data);

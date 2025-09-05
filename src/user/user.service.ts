@@ -36,11 +36,27 @@ export class UserService {
   }
 
   async readOne(id: number) {
-    return await this.prisma.users.findUnique({
+    const user = await this.prisma.users.findUnique({
       where: {
         id,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        birthAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
+    if (!user) {
+      throw new NotFoundException({
+        message: 'Usuário não encontrado',
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+    return user;
   }
 
   async upadateUser(id: number, data: UpdateUserDto) {

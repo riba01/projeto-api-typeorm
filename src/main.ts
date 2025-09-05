@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { LogInterceptor } from './interceptors/log.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +11,10 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  //assim interepta toda a aplicação
+  app.useGlobalInterceptors(new LogInterceptor());
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap().catch((err) => {
