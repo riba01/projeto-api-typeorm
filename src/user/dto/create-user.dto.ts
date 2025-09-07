@@ -2,10 +2,12 @@ import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { Role } from '../../enums/role.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -28,4 +30,8 @@ export class CreateUserDto {
   @Type(() => Date) // 👈 Faz a conversão de string -> Date
   @IsDate()
   birthAt?: Date | null;
+
+  @IsOptional()
+  @IsEnum(Role)
+  role?: number | 2;
 }

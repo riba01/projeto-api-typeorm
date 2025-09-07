@@ -13,6 +13,7 @@ model users {
   email     String   @db.VarChar(180) @unique
   password  String   @db.VarChar(255)
   birthAt   DateTime?  @db.Date
+  role      Int      @default(2) @db.UnsignedInt
   createdAt DateTime @default(now()) @db.DateTime(0)
   updatedAt DateTime @updatedAt @db.DateTime(0)
 }
