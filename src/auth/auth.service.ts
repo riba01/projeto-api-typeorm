@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { users } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
 import { AuthRegisterDto } from './dto/auth-register.dto';
@@ -53,14 +54,16 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
+    //gerarSalt sugerido
+    const salt = await bcrypt.genSalt();
+
     const user = await this.prisma.users.findFirst({
       where: {
         email,
-        password,
       },
     });
 
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Email e/ou senha incorretos');
     }
 
