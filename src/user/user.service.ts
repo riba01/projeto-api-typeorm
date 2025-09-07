@@ -18,11 +18,6 @@ export class UserService {
     }
     return await this.prisma.users.create({
       data,
-      select: {
-        id: true,
-        email: true,
-        name: true,
-      },
     });
   }
   async readAll() {
