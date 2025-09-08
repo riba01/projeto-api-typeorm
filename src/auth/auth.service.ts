@@ -54,8 +54,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    //gerarSalt sugerido
-    const salt = await bcrypt.genSalt();
+    /* console.log(process.env); */
 
     const user = await this.prisma.users.findFirst({
       where: {
