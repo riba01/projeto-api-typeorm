@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { FileModule } from '../file/file.module';
@@ -14,6 +15,7 @@ import { AuthService } from './auth.service';
     forwardRef(() => UserModule),
     PrismaModule,
     FileModule,
+    MailerModule,
   ],
 
   controllers: [AuthController],

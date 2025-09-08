@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(data: CreateUserDto) {
     const userExists = await this.prisma.users.findUnique({
       where: {
@@ -20,7 +21,6 @@ export class UserService {
 
     //gerarSalt sugerido
     const salt = await bcrypt.genSalt();
-    // console.log({ salt });
     //Criptografar a senha do usuário
     data.password = await bcrypt.hash(data.password, salt);
 
@@ -28,6 +28,7 @@ export class UserService {
       data,
     });
   }
+
   async readAll() {
     return await this.prisma.users.findMany({
       select: {

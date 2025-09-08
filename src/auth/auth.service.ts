@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import {
   BadRequestException,
   Injectable,
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
+    private readonly maillerService: MailerService,
   ) {}
 
   createToken(user: users) {
@@ -80,24 +82,60 @@ export class AuthService {
       throw new UnauthorizedException('Email incorreto');
     }
 
-    //TODO: Enviar o email
+    const token = this.jwtService.sign(
+      {
+        id: user.id,
+        name: user.name,
+      },
+      {
+        expiresIn: process.env.JWT_EXPIRATION_SECONDS,
+        subject: String(user.id),
+        issuer: 'forget',
+        audience: 'users',
+      },
+    );
+
+    await this.maillerService.sendMail({
+      subject: 'Recuperação de senha',
+      to: user.email,
+      template: 'forget',
+      context: {
+        name: user.name,
+        token: token,
+      },
+    });
+
     return true;
   }
 
   async reset(password: string, token: string) {
     //TODO: validar o token para troca de senha
-    const id = 0;
-    //TODO: Enviar o token no email
-    const user = await this.prisma.users.update({
-      where: {
-        id,
-      },
-      data: {
-        password,
-      },
-    });
+    try {
+      const data = this.jwtService.verify(token, {
+        issuer: 'forget',
+        audience: this.audience,
+      });
 
-    return this.createToken(user);
+      const id = data.id;
+      //gerarSalt sugerido
+      const salt = await bcrypt.genSalt();
+      // console.log({ salt });
+      //Criptografar a senha do usuário
+      password = await bcrypt.hash(password, salt);
+
+      const user = await this.prisma.users.update({
+        where: {
+          id,
+        },
+        data: {
+          password,
+        },
+      });
+
+      return user;
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
   }
 
   async register(data: AuthRegisterDto) {

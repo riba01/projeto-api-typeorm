@@ -44,15 +44,11 @@ export class AuthController {
     return this.authService.register(data);
   }
 
-  @UseGuards(AuthGuard, RoleGuard)
-  @Roles(Role.ADMIN, Role.USER)
   @Post('forget')
   async forget(@Body() { email }: AuthForgetDto) {
     return this.authService.forget(email);
   }
 
-  @UseGuards(AuthGuard, RoleGuard)
-  @Roles(Role.ADMIN, Role.USER)
   @Post('reset')
   async reset(@Body() { password, token }: AuthResetDto) {
     return this.authService.reset(password, token);
