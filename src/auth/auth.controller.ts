@@ -57,7 +57,7 @@ export class AuthController {
   @UseGuards(AuthGuard, RoleGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Post('me')
-  async me(@User() user) {
+  me(@User() user) {
     //console.log(headers);
     return { user };
   }
@@ -72,7 +72,7 @@ export class AuthController {
     photo: Express.Multer.File,
   ) {
     //console.log(headers);
-    return this.fileService.uploadPhoto(photo, user.id);
+    return this.fileService.uploadPhoto(photo, Number(user.id));
   }
 
   @UseInterceptors(
@@ -101,7 +101,7 @@ export class AuthController {
     // Se tiver foto, salva
     let savedPhoto;
     if (photo) {
-      savedPhoto = await this.fileService.uploadPhoto(photo, user.id);
+      savedPhoto = await this.fileService.uploadPhoto(photo, Number(user.id));
     }
 
     // Salva cada documento em sequência
@@ -114,7 +114,7 @@ export class AuthController {
       userId: number;
     }> = [];
     for (const doc of documents) {
-      const saved = await this.fileService.uploadDocument(doc, user.id);
+      const saved = await this.fileService.uploadDocument(doc, Number(user.id));
       savedDocuments.push(saved);
     }
 

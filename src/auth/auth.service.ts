@@ -122,7 +122,7 @@ export class AuthService {
         audience: this.audience,
       });
 
-      const id = data.id;
+      const id = Number(data.id);
       //gerarSalt sugerido
       const salt = await bcrypt.genSalt();
       // console.log({ salt });
@@ -150,6 +150,7 @@ export class AuthService {
       this.checkToken(token);
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }

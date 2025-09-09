@@ -30,5 +30,5 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsEnum(Role)
-  role?: number | 2;
+  role?: Role.USER;
 }

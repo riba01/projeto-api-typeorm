@@ -17,12 +17,13 @@ export class AuthGuard implements CanActivate {
 
     try {
       const data = this.authService.checkToken(
-        (token ?? '').replace('Bearer ', ''),
+        String((token ?? '').replace('Bearer ', '')),
       );
       request.tokenPayload = data;
-      request.user = await this.userService.readOne(data.id);
+      request.user = await this.userService.readOne(Number(data.id));
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }

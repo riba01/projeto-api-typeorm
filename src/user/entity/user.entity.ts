@@ -17,7 +17,7 @@ export class UserEntity {
     name: 'id',
     comment: 'Primary Key',
   })
-  id: number;
+  id?: number;
 
   @Column({
     length: 255,
@@ -48,8 +48,8 @@ export class UserEntity {
   role?: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 }

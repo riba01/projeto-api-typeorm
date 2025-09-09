@@ -15,10 +15,8 @@ export class UserService {
   ) {}
 
   async create(data: CreateUserDto) {
-    const userExists = await this.usersRepository.findOne({
-      where: {
-        email: data.email,
-      },
+    const userExists = await this.usersRepository.findOneBy({
+      email: data.email,
     });
     if (userExists) {
       throw new Error('User already exists');

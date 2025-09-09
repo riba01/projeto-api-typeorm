@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
+import { IsEmail } from 'class-validator';
 
 export class AuthForgetDto {
   @IsEmail()

@@ -13,7 +13,7 @@ export class RoleGuard implements CanActivate {
     private readonly userService: UserService,
   ) {}
 
-  async canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext) {
     const requireRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
