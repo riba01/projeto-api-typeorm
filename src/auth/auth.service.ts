@@ -5,9 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { users } from '@prisma/client';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 
@@ -18,19 +19,20 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
     private readonly userService: UserService,
     private readonly maillerService: MailerService,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  createToken(user: users) {
+  createToken(user: UserEntity) {
     const accessToken = this.jwtService.sign(
       {
         id: user.id,
         name: user.name,
       },
       {
-        expiresIn: process.env.JWT_EXPIRATION_SECONDS,
+        expiresIn: String(process.env.JWT_EXPIRATION_SECONDS),
         subject: String(user.id),
         issuer: this.issuer,
         audience: this.audience,
@@ -58,11 +60,15 @@ export class AuthService {
   async login(email: string, password: string) {
     /* console.log(process.env); */
 
-    const user = await this.prisma.users.findFirst({
+    const user = await this.usersRepository.findOne({
       where: {
         email,
       },
     });
+
+    if (user) {
+      console.log(user);
+    }
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Email e/ou senha incorretos');
@@ -72,7 +78,7 @@ export class AuthService {
   }
 
   async forget(email: string) {
-    const user = await this.prisma.users.findFirst({
+    const user = await this.usersRepository.findOne({
       where: {
         email,
       },
@@ -123,14 +129,9 @@ export class AuthService {
       //Criptografar a senha do usuário
       password = await bcrypt.hash(password, salt);
 
-      const user = await this.prisma.users.update({
-        where: {
-          id,
-        },
-        data: {
-          password,
-        },
-      });
+      await this.usersRepository.update({ id }, { password });
+
+      const user = await this.userService.readOne(id);
 
       return user;
     } catch (e) {

@@ -13,12 +13,12 @@ import {
 import { ParamId } from '../decorator/param-id.decorator';
 import { Roles } from '../decorator/roles.decorator';
 import { Role } from '../enums/role.enum';
+import { AuthGuard } from '../guards/auth.guard';
 import { RoleGuard } from '../guards/role.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
-import { AuthGuard } from '../guards/auth.guard';
 
 @UseGuards(AuthGuard, RoleGuard)
 //@UseInterceptors(LogInterceptor) //assim intercepta todo o controler

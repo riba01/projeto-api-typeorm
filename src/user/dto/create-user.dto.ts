@@ -1,6 +1,4 @@
-import { Type } from 'class-transformer';
 import {
-  IsDate,
   IsEmail,
   IsEnum,
   IsOptional,
@@ -27,9 +25,8 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  @Type(() => Date) // 👈 Faz a conversão de string -> Date
-  @IsDate()
-  birthAt?: Date | null;
+  @IsString()
+  birthAt?: string;
 
   @IsOptional()
   @IsEnum(Role)

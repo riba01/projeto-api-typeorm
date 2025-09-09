@@ -3,25 +3,40 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
+import { UserEntity } from './user/entity/user.entity';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: 3306,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS, //'jes198',
+      database: process.env.DB_NAME, //'api',
+      entities: [UserEntity],
+      synchronize: process.env.ENV === 'development' ? true : false, //process.env.ENV === 'development' ? true : false,
+    }),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
-          user: 'brooklyn.bins23',
-          pass: 'ehCRCGEfX4dqsCrxAP',
+          user: 'emmitt.ryan48@ethereal.email',
+          pass: 'Ga6y6cg7DEAMTzKYXP',
         },
       },
       defaults: {
-        from: '"NestJs Teste de email" <brooklyn.bins23@ethereal.email',
+        from: '"NestJs Teste de email" <emmitt.ryan48@ethereal.email',
       },
       template: {
         dir: __dirname + '/templates',
@@ -41,9 +56,6 @@ import { UserModule } from './user/user.module';
           limit: 10,
         },
       ],
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
     }),
   ],
   controllers: [AppController],
